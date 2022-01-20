@@ -1,0 +1,11 @@
+startwith(<cap>)
+([A-Z]).*
+startwith(<let>)
+([a-zA-Z]).*
+contain(<cap>)
+.*([A-Z]).*
+contain(<low>)
+.*([a-z]).*
+contain(<let>)
+.*([a-zA-Z]).*
+READY-0

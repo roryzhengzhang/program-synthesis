@@ -1,0 +1,335 @@
+program:  <A>
+automaton:  [A]
+matching indices: 
+matching examples:
+program:  <B>
+automaton:  [B]
+matching indices: 
+matching examples:
+program:  <cap>
+automaton:  [A-Z]
+matching indices: 
+matching examples:
+program:  <low>
+automaton:  [a-z]
+matching indices: 
+matching examples:
+program:  <E>
+automaton:  [E]
+matching indices: 
+matching examples:
+program:  <f>
+automaton:  [f]
+matching indices: 
+matching examples:
+program:  <'>
+automaton:  [']
+matching indices: 
+matching examples:
+program:  <H>
+automaton:  [H]
+matching indices: 
+matching examples:
+program:  <I>
+automaton:  [I]
+matching indices: 
+matching examples:
+program:  <j>
+automaton:  [j]
+matching indices: 
+matching examples:
+program:  <let>
+automaton:  [a-zA-Z]
+matching indices: 
+matching examples:
+program:  <k>
+automaton:  [k]
+matching indices: 
+matching examples:
+program:  startwith(<A>)
+automaton:  ([A]).*
+matching indices:  0 1 2 3 4 5
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+program:  startwith(<B>)
+automaton:  ([B]).*
+matching indices: 
+matching examples:
+program:  startwith(<cap>)
+automaton:  ([A-Z]).*
+matching indices:  0 1 2 3 4 5 6 7 8 9 10 11
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  startwith(<low>)
+automaton:  ([a-z]).*
+matching indices: 
+matching examples:
+program:  startwith(<E>)
+automaton:  ([E]).*
+matching indices:  6 7 8 9 10 11
+matching examples:
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  startwith(<f>)
+automaton:  ([f]).*
+matching indices: 
+matching examples:
+program:  startwith(<'>)
+automaton:  ([']).*
+matching indices: 
+matching examples:
+program:  startwith(<H>)
+automaton:  ([H]).*
+matching indices: 
+matching examples:
+program:  startwith(<I>)
+automaton:  ([I]).*
+matching indices: 
+matching examples:
+program:  startwith(<j>)
+automaton:  ([j]).*
+matching indices: 
+matching examples:
+program:  startwith(<let>)
+automaton:  ([a-zA-Z]).*
+matching indices:  0 1 2 3 4 5 6 7 8 9 10 11
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  startwith(<k>)
+automaton:  ([k]).*
+matching indices: 
+matching examples:
+program:  endwith(<A>)
+automaton:  .*([A])
+matching indices:  11
+matching examples:
+EIBfEIBHA---------true
+program:  endwith(<B>)
+automaton:  .*([B])
+matching indices: 
+matching examples:
+program:  endwith(<cap>)
+automaton:  .*([A-Z])
+matching indices:  11
+matching examples:
+EIBfEIBHA---------true
+program:  endwith(<low>)
+automaton:  .*([a-z])
+matching indices: 
+matching examples:
+program:  endwith(<E>)
+automaton:  .*([E])
+matching indices: 
+matching examples:
+program:  endwith(<f>)
+automaton:  .*([f])
+matching indices: 
+matching examples:
+program:  endwith(<'>)
+automaton:  .*(['])
+matching indices:  0 1 2 3 4 5 6 7 8 9 10
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+program:  endwith(<H>)
+automaton:  .*([H])
+matching indices: 
+matching examples:
+program:  endwith(<I>)
+automaton:  .*([I])
+matching indices: 
+matching examples:
+program:  endwith(<j>)
+automaton:  .*([j])
+matching indices: 
+matching examples:
+program:  endwith(<let>)
+automaton:  .*([a-zA-Z])
+matching indices:  11
+matching examples:
+EIBfEIBHA---------true
+program:  endwith(<k>)
+automaton:  .*([k])
+matching indices: 
+matching examples:
+program:  contain(<A>)
+automaton:  .*([A]).*
+matching indices:  0 1 2 3 4 5 7 8 9 11
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBHA---------true
+program:  contain(<B>)
+automaton:  .*([B]).*
+matching indices:  4 5 6 7 8 9 10 11
+matching examples:
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  contain(<cap>)
+automaton:  .*([A-Z]).*
+matching indices:  0 1 2 3 4 5 6 7 8 9 10 11
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  contain(<low>)
+automaton:  .*([a-z]).*
+matching indices:  0 1 2 3 4 5 6 7 8 9 10 11
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  contain(<E>)
+automaton:  .*([E]).*
+matching indices:  4 5 6 7 8 9 10 11
+matching examples:
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  contain(<f>)
+automaton:  .*([f]).*
+matching indices:  1 2 3 4 5 7 8 9 10 11
+matching examples:
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  contain(<'>)
+automaton:  .*([']).*
+matching indices:  0 1 2 3 4 5 6 7 8 9 10
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+program:  contain(<H>)
+automaton:  .*([H]).*
+matching indices:  3 5 9 11
+matching examples:
+AfAHA'---------true
+AfEIBHA'---------true
+EIBfAHA'---------true
+EIBfEIBHA---------true
+program:  contain(<I>)
+automaton:  .*([I]).*
+matching indices:  4 5 6 7 8 9 10 11
+matching examples:
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true
+program:  contain(<j>)
+automaton:  .*([j]).*
+matching indices:  0 6
+matching examples:
+Aj'---------true
+EIBj'---------true
+program:  contain(<let>)
+automaton:  .*([a-zA-Z]).*
+matching indices:  0 1 2 3 4 5 6 7 8 9 10 11
+matching examples:
+Aj'---------true
+AfA'---------true
+AfAk'---------true
+AfAHA'---------true
+AfEIBk'---------true
+AfEIBHA'---------true
+EIBj'---------true
+EIBfA'---------true
+EIBfAk'---------true
+EIBfAHA'---------true
+EIBfEIBk'---------true
+EIBfEIBHA---------true

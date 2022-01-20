@@ -1,0 +1,15 @@
+'Aj', +
+'AfA', +
+'AfAk', +
+'AfAHA', +
+'AfEIBk', +
+'AfEIBHA', +
+'EIBj', +
+'EIBfA', +
+'EIBfAk', +
+'EIBfAHA', +
+'EIBfEIBk', +
+'EIBfEIBHA' +
+
+repeatatleast(or(<A>,or(<B>,<C>)),1)
+READY-0
