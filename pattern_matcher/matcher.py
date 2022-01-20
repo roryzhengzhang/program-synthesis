@@ -78,7 +78,7 @@ def identify_type(p):
         return "SIGN"
     if re.search(r"^\$", p):
         return "ENT"
-    if re.search(r"\(.*\)", p):
+    if re.search(r"\<.*\>", p):
         return "REG"
     else:
         return "WORD"
@@ -87,7 +87,7 @@ def extract_value(p, type):
     if type in ["WORD", "SIGN"]:
         return p
     if type == "REG":
-        result = re.search(r"\((.*)\)", p)
+        result = re.search(r"\<(.*)\>", p)
         value = result.group(1)
         return value
     if type == "LEMMA":
