@@ -15,9 +15,8 @@ def submit():
     matched = searchAPI(pattern)
     rows = []
     for index, row in enumerate(matched):
-        rows.append({"id": index, "review_id": row['review_id'], "review": row['matched_parts']})
+        rows.append({"id": index, "review_id": row['review_id'], "review": {"text": row['text'], "matched_parts": row['matched']}})
     
-    pprint(rows[0])
     response = {"rows": rows}
     return jsonify(response)
 
