@@ -5,10 +5,42 @@ from spacy.matcher import Matcher
 import re
 import json
 from pprint import pprint
+import time
 
 nlp = spacy.load("en_core_web_sm")
+matcher = Matcher(nlp.vocab)
+
 # nltk.download('omw-1.4')
-    
+
+def search2(reviews, patterns):
+    '''
+        texts: an array of dictionaries regarding reviews
+        patterns: a group of patterns consumable by spacy matcher
+    '''
+    matched = []
+    for review_id in reviews.keys():
+        for p in patterns: 
+            matched_sentences = match_pattern2(reviews[review_id], p)
+            if len(matched_sentences) > 0:
+                matched.append({
+                    "review_id": review_id,
+                    # "business_id": review['business_id'],
+                    "matched_parts": matched_sentences
+                })
+    return matched
+
+def match_pattern2(doc, pattern):
+    matcher.add("Pattern", [pattern])
+    matched_sentences = []
+    for sent in doc.sents:
+        matches = matcher(sent)
+        if matches is not None and len(matches) != 0:
+            matched_sentences.append(" ".join([i.text for i in sent]))
+    return matched_sentences
+    # for match_id, start, end in matches:
+    #     string_id = nlp.vocab.strings[match_id]
+    #     span = doc[start:end]
+    #     print(match_id, string_id, start, end, span.text)
 
 def search(reviews, patterns):
     '''
@@ -28,15 +60,25 @@ def search(reviews, patterns):
     return matched
 
 def match_pattern(text, pattern):
+    x = time.perf_counter()
     doc = nlp(text)
-    matcher = Matcher(nlp.vocab)
+    y = time.perf_counter()
+    # matcher = Matcher(nlp.vocab)
+    print(matcher)
+    z = time.perf_counter()
+
+    print(y-x)
+    print(z-y)
+   
     matcher.add("Pattern", [pattern])
     matched_sentences = []
     for sent in doc.sents:
         matches = matcher(sent)
         if matches is not None and len(matches) != 0:
             matched_sentences.append(" ".join([i.text for i in sent]))
-
+    x = time.perf_counter()
+    print(x-z)
+    # exit(0)
     return matched_sentences
     # for match_id, start, end in matches:
     #     string_id = nlp.vocab.strings[match_id]
@@ -140,7 +182,14 @@ def iter_parse_pattern(tokens, partial_list, global_patterns):
         partial_list.append(convert_pattern(type, value))
         iter_parse_pattern(tokens[1:], partial_list, global_patterns)
 
-def searchAPI(pattern, dataset="converted_sample_dataset.json"):
+def searchAPI(pattern, dataset="converted_sample_dataset.json", data=None):
+    x = time.perf_counter()
+    if data:
+        patterns = parse_pattern(pattern)
+        matched = search2(data, patterns)
+        y = time.perf_counter()
+        print(y-x)
+        return matched
     with open(dataset, "r") as f:
         patterns = parse_pattern(pattern)
         data = json.load(f)
