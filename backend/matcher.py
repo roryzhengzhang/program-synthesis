@@ -8,7 +8,7 @@ from pprint import pprint
 import time
 
 nlp = spacy.load("en_core_web_sm")
-matcher = Matcher(nlp.vocab)
+
 
 # nltk.download('omw-1.4')
 
@@ -20,22 +20,25 @@ def search2(reviews, patterns):
     matched = []
     for review_id in reviews.keys():
         for p in patterns: 
-            matched_sentences = match_pattern2(reviews[review_id], p)
+            matched_sentences = match_pattern2(reviews[review_id], p, reviewId=review_id)
             if len(matched_sentences) > 0:
-                matched.append({
-                    "review_id": review_id,
-                    # "business_id": review['business_id'],
-                    "matched_parts": matched_sentences
-                })
+                matched.extend(matched_sentences)
     return matched
 
-def match_pattern2(doc, pattern):
+def match_pattern2(doc, pattern, reviewId):
+    matcher = Matcher(nlp.vocab)
+
     matcher.add("Pattern", [pattern])
     matched_sentences = []
     for sent in doc.sents:
         matches = matcher(sent)
+        matched_part = []
         if matches is not None and len(matches) != 0:
-            matched_sentences.append(" ".join([i.text for i in sent]))
+            for _, start, end in matches:
+                matched_string = sent[start:end]
+                matched_part.append(" ".join([i.text for i in matched_string]))
+
+            matched_sentences.append({"review_id": reviewId, "text": " ".join([i.text for i in sent]), "matched": matched_part})
     return matched_sentences
     # for match_id, start, end in matches:
     #     string_id = nlp.vocab.strings[match_id]
@@ -50,35 +53,27 @@ def search(reviews, patterns):
     matched = []
     for review in reviews:
         for p in patterns: 
-            matched_sentences = match_pattern(review['text'], p)
+            matched_sentences = match_pattern(review['text'], p, review['review_id'], review['business_id'])
             if len(matched_sentences) > 0:
-                matched.append({
-                    "review_id": review['review_id'],
-                    "business_id": review['business_id'],
-                    "matched_parts": matched_sentences
-                })
+                matched.extend(matched_sentences)
     return matched
 
-def match_pattern(text, pattern):
-    x = time.perf_counter()
+def match_pattern(text, pattern, reviewId, businessId):
     doc = nlp(text)
-    y = time.perf_counter()
-    # matcher = Matcher(nlp.vocab)
-    print(matcher)
-    z = time.perf_counter()
-
-    print(y-x)
-    print(z-y)
+    
+    matcher = Matcher(nlp.vocab)
    
     matcher.add("Pattern", [pattern])
     matched_sentences = []
     for sent in doc.sents:
         matches = matcher(sent)
+        matched_part = []
         if matches is not None and len(matches) != 0:
-            matched_sentences.append(" ".join([i.text for i in sent]))
-    x = time.perf_counter()
-    print(x-z)
-    # exit(0)
+            for _, start, end in matches:
+                matched_string = sent[start:end]
+                matched_part.append(" ".join([i.text for i in matched_string]))
+            matched_sentences.append({"review_id": reviewId, "business_id": businessId, "text": " ".join([i.text for i in sent]), "matched": matched_part})
+
     return matched_sentences
     # for match_id, start, end in matches:
     #     string_id = nlp.vocab.strings[match_id]
@@ -174,24 +169,25 @@ def iter_parse_pattern(tokens, partial_list, global_patterns):
         for p in parts:
             type = identify_type(p)
             value = extract_value(p, type)
-            partial_list.append(convert_pattern(type, value))
-            iter_parse_pattern(tokens[1:], partial_list, global_patterns)
+            new_list = [i for i in partial_list]
+            new_list.append(convert_pattern(type, value))
+            iter_parse_pattern(tokens[1:], new_list, global_patterns)
     else:
         type = identify_type(tokens[0])
         value = extract_value(tokens[0], type)
+        new_list = [i for i in partial_list]
+        new_list.append(convert_pattern(type, value))
         partial_list.append(convert_pattern(type, value))
-        iter_parse_pattern(tokens[1:], partial_list, global_patterns)
+        iter_parse_pattern(tokens[1:], new_list, global_patterns)
 
 def searchAPI(pattern, dataset="converted_sample_dataset.json", data=None):
-    x = time.perf_counter()
     if data:
         patterns = parse_pattern(pattern)
         matched = search2(data, patterns)
-        y = time.perf_counter()
-        print(y-x)
         return matched
     with open(dataset, "r") as f:
         patterns = parse_pattern(pattern)
+        pprint(patterns)
         data = json.load(f)
         matched = search(data, patterns)
 

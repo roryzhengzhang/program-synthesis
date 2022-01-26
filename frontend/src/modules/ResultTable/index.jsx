@@ -1,11 +1,64 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from '@mui/material/Link';
+import Highlighter from "react-highlight-words";
+import Typography from '@mui/material/Typography';
+
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'review_id', headerName: 'Review ID', width: 100 },
-    { field: 'review', headerName: "Matached review", width: 700, description: "The review sentences that match the given pattern" }
+    {
+        field: 'review',
+        headerName: "Matached review",
+        width: 900,
+        renderCell: (params) => {
+            var text = params.value.text
+            var matched = params.value.matched_parts
+            return (
+                // <div>
+                //     {words.map(function(w, index) {
+                //         if(index < params.value.start_index || index > params.value.end_index) {
+                //             return <div>{w} </div>
+                //         } else {
+                //             return (<strong>{w} </strong>);
+                //         }
+                //     })}
+                // </div>
+
+                      
+                <Highlighter
+                    searchWords={[]}
+                    textToHighlight={text}
+                    findChunks={({searchWords, textToHighlight}) => {
+                        var chunks = []
+                        matched.map((m) => {
+                            let start = textToHighlight.indexOf(m)
+                            let end = start + m.length
+                            chunks.push({start, end})
+                        })
+
+
+                        // var words = textToHighlight.split(' ');
+                        // var chunks = [];
+                        // var cur_length = 0
+                        // for (var i=0; i<words.length; i++) {
+                        //     if (i >= start && i < end) {
+                        //         chunks.push({
+                        //             start: cur_length,
+                        //             end: cur_length+words[i].length
+                        //         })
+                        //         // move to the start index of the next word
+                        //     }
+                        //     cur_length += words[i].length + 1
+                        // }
+                        return chunks
+                    }}
+                />
+            )
+        }
+    }
     //   { field: 'id', headerName: 'ID', width: 70 },
     //   { field: 'firstName', headerName: 'First name', width: 130 },
     //   { field: 'lastName', headerName: 'Last name', width: 130 },
@@ -29,8 +82,7 @@ const columns = [
 ];
 
 const rows = [
-    { id: 1, review_id: 1, review: "Placeholder" },
-    { id: 2, review_id: 2, review: "Placeholder" }
+    { id: 1, review_id: 1, review: { text: "this is default placeholder", start_index: 2, end_index: 4 } },
     //   { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
     //   { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
     //   { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
@@ -49,7 +101,8 @@ export default function ResultTable() {
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
-                rows={searchState['rows']}
+                // rows={searchState['rows']}
+                rows={searchState.rows}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
