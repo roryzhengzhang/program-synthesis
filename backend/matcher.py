@@ -17,7 +17,7 @@ def search2(reviews, patterns):
         texts: an array of dictionaries regarding reviews
         patterns: a group of patterns consumable by spacy matcher
     '''
-    matched = []
+    matched = [] 
     for review_id in reviews.keys():
         for p in patterns: 
             matched_sentences = match_pattern2(reviews[review_id], p, reviewId=review_id)
