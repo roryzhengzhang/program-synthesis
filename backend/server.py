@@ -1,3 +1,4 @@
+from glob import glob
 import json
 import re
 from flask import Flask, request, jsonify, session, redirect, url_for
@@ -7,6 +8,9 @@ from pprint import pprint
 from matcher import searchAPI
 
 import spacy
+import os.path
+import pickle
+
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -14,11 +18,21 @@ app = Flask(__name__)
 models = {}
 doc = None
 
-def loadModel(dataset ="converted_sample_dataset.json"):
-    with open(dataset, "r") as f:
-        data = json.load(f)
-    for review in data:
-        models[review['review_id']] = nlp(review['text'])
+def loadModel(dataset ="converted_sample_dataset.json", reload=False):
+    global models
+    pkl_exists = os.path.exists("data.pkl")
+    if(reload or not pkl_exists):
+        with open(dataset, "r") as f:
+            data = json.load(f)
+        for review in data:
+            models[review['review_id']] = nlp(review['text'])
+        #dump models into pickle
+        pkl_file = open("data.pkl", "wb")
+        pickle.dump(models, pkl_file)
+        pkl_file.close()
+    else:
+        pkl_file = open("data.pkl", "rb")
+        models = pickle.load(pkl_file)
 
 
 CORS(app)
