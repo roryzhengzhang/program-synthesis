@@ -24,3 +24,6 @@ The current search engine supports the following pattern syntax:
 #4: Find all the sentences that contains the structure: *NOUN have ... a great day!*
 > NOUN + [have] + * + a + great + day + !
 
+
+[Model trained with big dataset](https://drive.google.com/drive/folders/1Be49wK9ZJS_L0lZ4D_Ca0sXsvObRvtIW)
+[Yelp dataset with 200k datapoints](https://drive.google.com/file/d/1_qYZWAQoLvba9IwgNPxxTVFtejNw88h9/view?usp=sharing)
