@@ -6,23 +6,44 @@ import re
 import json
 from pprint import pprint
 import time
+import os
+import concurrent.futures
 
 nlp = spacy.load("en_core_web_sm")
 
 
 # nltk.download('omw-1.4')
+def thread_search(review_id, review, pattern):
+    thread_matched = []
+    # print(review_id)
+    # for p in patterns: 
+    matched_sentences = match_pattern2(review, pattern, reviewId=review_id)
+    if len(matched_sentences) > 0:
+        thread_matched.extend(matched_sentences)
+    return thread_matched
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
 
 def search2(reviews, patterns):
     '''
         texts: an array of dictionaries regarding reviews
         patterns: a group of patterns consumable by spacy matcher
     '''
-    matched = [] 
-    for review_id in reviews.keys():
-        for p in patterns: 
-            matched_sentences = match_pattern2(reviews[review_id], p, reviewId=review_id)
-            if len(matched_sentences) > 0:
-                matched.extend(matched_sentences)
+    cpus = os.cpu_count()
+    keys = list(reviews.keys())
+    chunk_bins = len(keys)//(cpus-1)
+    data_chunks = list(chunks(keys, chunk_bins))
+    processes = []
+    matched = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=cpus-1) as executor: 
+        for review_id in reviews.keys():
+            for p in patterns:
+                processes.append(executor.submit(thread_search, review_id, reviews[review_id], p))
+    for _ in processes:
+        if(len(_.result())>0):
+            matched.extend(_.result())
     return matched
 
 def match_pattern2(doc, pattern, reviewId):
