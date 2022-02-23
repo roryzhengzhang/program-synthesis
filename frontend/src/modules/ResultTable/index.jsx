@@ -4,19 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import Link from '@mui/material/Link';
 import Highlighter from "react-highlight-words";
 import Typography from '@mui/material/Typography';
-
+import { Checkbox } from '@mui/material';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'review_id', headerName: 'Review ID', width: 100 },
     {
         field: 'review',
-        headerName: "Matached review",
-        width: 900,
+        headerName: "Matched review",
+        width: 425,
         renderCell: (params) => {
             var text = params.value.text
             var matched = params.value.matched_parts
             return (
+                <></>
                 // <div>
                 //     {words.map(function(w, index) {
                 //         if(index < params.value.start_index || index > params.value.end_index) {
@@ -28,37 +29,51 @@ const columns = [
                 // </div>
 
                       
-                <Highlighter
-                    searchWords={[]}
-                    textToHighlight={text}
-                    findChunks={({searchWords, textToHighlight}) => {
-                        var chunks = []
-                        matched.map((m) => {
-                            let start = textToHighlight.indexOf(m)
-                            let end = start + m.length
-                            chunks.push({start, end})
-                        })
+            //     <Highlighter
+            //         searchWords={[]}
+            //         textToHighlight={text}
+            //         findChunks={({searchWords, textToHighlight}) => {
+            //             var chunks = []
+            //             matched.map((m) => {
+            //                 let start = textToHighlight.indexOf(m)
+            //                 let end = start + m.length
+            //                 chunks.push({start, end})
+            //             })
 
 
-                        // var words = textToHighlight.split(' ');
-                        // var chunks = [];
-                        // var cur_length = 0
-                        // for (var i=0; i<words.length; i++) {
-                        //     if (i >= start && i < end) {
-                        //         chunks.push({
-                        //             start: cur_length,
-                        //             end: cur_length+words[i].length
-                        //         })
-                        //         // move to the start index of the next word
-                        //     }
-                        //     cur_length += words[i].length + 1
-                        // }
-                        return chunks
-                    }}
-                />
+            //             // var words = textToHighlight.split(' ');
+            //             // var chunks = [];
+            //             // var cur_length = 0
+            //             // for (var i=0; i<words.length; i++) {
+            //             //     if (i >= start && i < end) {
+            //             //         chunks.push({
+            //             //             start: cur_length,
+            //             //             end: cur_length+words[i].length
+            //             //         })
+            //             //         // move to the start index of the next word
+            //             //     }
+            //             //     cur_length += words[i].length + 1
+            //             // }
+            //             return chunks
+            //         }}
+            //     />
             )
         }
-    }
+    },
+    { field: 'correct', headerName: 'Correct?', checkboxSelection: true, width: 100,
+      renderCell: (params) => {
+          return (
+              <Checkbox />
+          );
+      }
+    },
+    { field: 'notes', headerName: 'Notes', checkboxSelection: true, width: 400,
+      renderCell: (params) => {
+          return (
+              <input type="text" style={{width: 400}}></input>
+          );
+      }
+    },
     //   { field: 'id', headerName: 'ID', width: 70 },
     //   { field: 'firstName', headerName: 'First name', width: 130 },
     //   { field: 'lastName', headerName: 'Last name', width: 130 },
@@ -83,6 +98,9 @@ const columns = [
 
 const rows = [
     { id: 1, review_id: 1, review: { text: "this is default placeholder", start_index: 2, end_index: 4 } },
+    { id: 2, review_id: 2, review: { text: "this is another placeholder", start_index: 2, end_index: 4 } },
+    { id: 3, review_id: 3, review: { text: "", start_index: 2, end_index: 4 } },
+    { id: 4, review_id: 4, review: { text: "", start_index: 2, end_index: 4 } },
     //   { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
     //   { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
     //   { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
@@ -94,19 +112,19 @@ const rows = [
 ];
 
 export default function ResultTable() {
-
+    const [expand, setExpand] = React.useState(false);
     const dispatch = useDispatch()
     const searchState = useSelector(state => state.search)
 
     return (
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 400, width: '100%' }} onClick={() => {setExpand(!expand); console.log(expand)}}>
             <DataGrid
                 // rows={searchState['rows']}
-                rows={searchState.rows}
+                rows={rows}
+                // rows={searchState.rows}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
-                checkboxSelection
             />
         </div>
     );
