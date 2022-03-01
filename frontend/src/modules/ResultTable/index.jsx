@@ -5,14 +5,16 @@ import Link from '@mui/material/Link';
 import Highlighter from "react-highlight-words";
 import Typography from '@mui/material/Typography';
 import { Checkbox } from '@mui/material';
+import { isOverflown, GridCellExpand, renderCellExpand } from './ExpandCell';
 
 const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'review_id', headerName: 'Review ID', width: 100 },
+    { field: 'id', headerName: 'ID', width: 70, flex: 0.0625 },
+    { field: 'review_id', headerName: 'Review ID', width: 100, flex: 0.125},
     {
         field: 'review',
         headerName: "Matched review",
         width: 425,
+        flex: 1.0,
         renderCell: (params) => {
             var text = params.value.text
             var matched = params.value.matched_parts
@@ -60,19 +62,16 @@ const columns = [
             )
         }
     },
-    { field: 'correct', headerName: 'Correct?', checkboxSelection: true, width: 100,
+    { field: 'correct', headerName: 'Correct?', type: 'boolean', checkboxSelection: true, width: 100,
+    flex: 0.125, editable: true,
       renderCell: (params) => {
           return (
               <Checkbox />
           );
       }
     },
-    { field: 'notes', headerName: 'Notes', checkboxSelection: true, width: 400,
-      renderCell: (params) => {
-          return (
-              <input type="text" style={{width: 400}}></input>
-          );
-      }
+    { field: 'notes', headerName: 'Notes', width: 400, flex: 1.0, editable: true,
+        renderCell: renderCellExpand
     },
     //   { field: 'id', headerName: 'ID', width: 70 },
     //   { field: 'firstName', headerName: 'First name', width: 130 },
@@ -111,13 +110,29 @@ const rows = [
     //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
+// function useApiRef() {
+//     const apiRef = React.useRef(null);
+//     const _columns = React.useMemo(() => {
+//         columns.concat({
+//             field: "__HIDDEN__",
+//             width: 0,
+//             renderCell: (props) => {
+//                 apiRef.current = props.api;
+//                 return null;
+//             }
+//         })
+//     }, [columns]);
+
+//     return {apiRef, columns: _columns};
+// }
+
 export default function ResultTable() {
-    const [expand, setExpand] = React.useState(false);
+    // const {apiRef, columns} = useApiRef();
     const dispatch = useDispatch()
     const searchState = useSelector(state => state.search)
 
     return (
-        <div style={{ height: 400, width: '100%' }} onClick={() => {setExpand(!expand); console.log(expand)}}>
+        <div style={{ height: 400, width: '100%' }} >
             <DataGrid
                 // rows={searchState['rows']}
                 rows={rows}
