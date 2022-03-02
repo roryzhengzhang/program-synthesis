@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Link from '@mui/material/Link';
 import Highlighter from "react-highlight-words";
 import Typography from '@mui/material/Typography';
-import { Checkbox } from '@mui/material';
-import { isOverflown, GridCellExpand, renderCellExpand } from './ExpandCell';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { GridCellExpand, renderCellExpand } from './ExpandCell';
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 70, flex: 0.0625 },
@@ -63,12 +64,7 @@ const columns = [
         }
     },
     { field: 'correct', headerName: 'Correct?', type: 'boolean', checkboxSelection: true, width: 100,
-    flex: 0.125, editable: true,
-      renderCell: (params) => {
-          return (
-              <Checkbox />
-          );
-      }
+        flex: 0.125, editable: true
     },
     { field: 'notes', headerName: 'Notes', width: 400, flex: 1.0, editable: true,
         renderCell: renderCellExpand
@@ -95,19 +91,11 @@ const columns = [
     //   },
 ];
 
-const rows = [
+const init_rows = [
     { id: 1, review_id: 1, review: { text: "this is default placeholder", start_index: 2, end_index: 4 } },
     { id: 2, review_id: 2, review: { text: "this is another placeholder", start_index: 2, end_index: 4 } },
     { id: 3, review_id: 3, review: { text: "", start_index: 2, end_index: 4 } },
     { id: 4, review_id: 4, review: { text: "", start_index: 2, end_index: 4 } },
-    //   { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    //   { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    //   { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    //   { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    //   { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    //   { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    //   { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
 // function useApiRef() {
@@ -126,21 +114,67 @@ const rows = [
 //     return {apiRef, columns: _columns};
 // }
 
+const useMutation = () => {
+    return React.useCallback(
+      (user) =>
+        new Promise((resolve) =>
+          setTimeout(() => {
+            resolve(user);
+          }, 200),
+        ),
+      [],
+    );
+  };
+
 export default function ResultTable() {
     // const {apiRef, columns} = useApiRef();
-    const dispatch = useDispatch()
-    const searchState = useSelector(state => state.search)
+    const [snackbar, setSnackbar] = React.useState(null);
+    const handleCloseSnackbar = () => setSnackbar(null);
+
+    const dispatch = useDispatch();
+    const searchState = useSelector(state => state.search);
+    const [rows, setRows] = React.useState(init_rows);
+    const mutateRow = useMutation();
+
+    // anytime changes are made to a row, make sure persists on backend and update user by updating snackbar
+    const handleCellEditCommit = React.useCallback(
+        async (params) => {
+          try {
+            // make HTTP request to save on backend
+            const response = await mutateRow({
+              id: params.id,
+              [params.field]: params.value,
+            });
+    
+            setSnackbar({ children: 'Row successfully saved', severity: 'success' });
+            setRows((prev) =>
+              prev.map((row) => (row.id === params.id ? { ...row, ...response } : row)),
+            );
+          } catch (error) {
+            setSnackbar({ children: 'Error while saving row', severity: 'error' });
+            // Restore the row in case of error
+            setRows((prev) => [...prev]);
+          }
+        },
+        [mutateRow],
+    );
 
     return (
-        <div style={{ height: 400, width: '100%' }} >
+        <div style={{ height: '61.8vh', width: '100%' }} >
             <DataGrid
                 // rows={searchState['rows']}
-                rows={rows}
+                rows={init_rows}
                 // rows={searchState.rows}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
+                onCellEditCommit={handleCellEditCommit}
             />
+            {!!snackbar && (
+              <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
+                <Alert {...snackbar} onClose={handleCloseSnackbar} />
+              </Snackbar>
+            )}
         </div>
     );
 }

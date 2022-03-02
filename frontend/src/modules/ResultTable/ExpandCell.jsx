@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 
-export function isOverflown(element) {
+function isOverflown(element) {
   return (
     element.scrollHeight > element.clientHeight ||
     element.scrollWidth > element.clientWidth
