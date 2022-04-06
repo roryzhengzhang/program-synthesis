@@ -85,7 +85,23 @@ export const GridCellExpand = React.memo(function GridCellExpand(props) {
         <Popper
           open={showFullCell && anchorEl !== null}
           anchorEl={anchorEl}
-          style={{ width, marginLeft: -17 }}
+          style={{ width }}
+          modifiers={[{
+            name: 'preventOverflow',
+            options: {
+              padding: 17,
+              mainAxis: true,
+              altAxis: false
+            },
+            name: 'flip',
+            options: {
+              padding: 17,
+            },
+            name: 'offset',
+            options: {
+              offset: [-17,0]
+            }
+          }]}
         >
           <Paper
             elevation={1}
@@ -102,13 +118,14 @@ export const GridCellExpand = React.memo(function GridCellExpand(props) {
 });
 
 GridCellExpand.propTypes = {
-  value: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
 };
 
 export function renderCellExpand(params) {
+  let width = params.colDef.computedWidth;
+  params.field === "review_id" ? width = width * 1.382 : width = width;
   return (
-    <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
+    <GridCellExpand value={params.value || ''} width={width} />
   );
 }
 
@@ -120,5 +137,5 @@ renderCellExpand.propTypes = {
   /**
    * The cell value, but if the column has valueGetter, use getValue.
    */
-  value: PropTypes.string.isRequired,
+  // value: PropTypes.string.isRequired,
 };

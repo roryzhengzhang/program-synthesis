@@ -8,126 +8,67 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { GridCellExpand, renderCellExpand } from './ExpandCell';
 
+// function HighlighterCellExpand(params){
+//   return (
+//     <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
+//   );
+// }
+
 const columns = [
-    { field: 'id', headerName: 'ID', width: 70, flex: 0.0625 },
-    { field: 'review_id', headerName: 'Review ID', width: 100, flex: 0.125},
+    { field: 'review_id', headerName: 'Review ID', width: 100, flex: 0.45, renderCell: renderCellExpand},
     {
         field: 'review',
-        headerName: "Matched review",
+        headerName: "Matched Review",
         width: 425,
-        flex: 1.0,
+        flex: 1.618,
+        // renderCell: renderCellExpand
         renderCell: (params) => {
             var text = params.value.text
             var matched = params.value.matched_parts
             return (
-                <></>
-                // <div>
-                //     {words.map(function(w, index) {
-                //         if(index < params.value.start_index || index > params.value.end_index) {
-                //             return <div>{w} </div>
-                //         } else {
-                //             return (<strong>{w} </strong>);
-                //         }
-                //     })}
-                // </div>
-
-                      
-            //     <Highlighter
-            //         searchWords={[]}
-            //         textToHighlight={text}
-            //         findChunks={({searchWords, textToHighlight}) => {
-            //             var chunks = []
-            //             matched.map((m) => {
-            //                 let start = textToHighlight.indexOf(m)
-            //                 let end = start + m.length
-            //                 chunks.push({start, end})
-            //             })
-
-
-            //             // var words = textToHighlight.split(' ');
-            //             // var chunks = [];
-            //             // var cur_length = 0
-            //             // for (var i=0; i<words.length; i++) {
-            //             //     if (i >= start && i < end) {
-            //             //         chunks.push({
-            //             //             start: cur_length,
-            //             //             end: cur_length+words[i].length
-            //             //         })
-            //             //         // move to the start index of the next word
-            //             //     }
-            //             //     cur_length += words[i].length + 1
-            //             // }
-            //             return chunks
-            //         }}
-            //     />
+              // <></>
+              // text
+                <Highlighter
+                    searchWords={[]}
+                    textToHighlight={text}
+                    findChunks={({searchWords, textToHighlight}) => {
+                        var chunks = []
+                        matched.map((m) => {
+                            let start = textToHighlight.indexOf(m)
+                            let end = start + m.length
+                            chunks.push({start, end})
+                        })
+                        return chunks
+                    }}
+                />
             )
         }
     },
     { field: 'correct', headerName: 'Correct?', type: 'boolean', checkboxSelection: true, width: 100,
-        flex: 0.125, editable: true
+        flex: 0.1, sortable: false, editable: true
     },
-    { field: 'notes', headerName: 'Notes', width: 400, flex: 1.0, editable: true,
+    { field: 'notes', headerName: 'Notes', width: 400, flex: 0.38, sortable: false, editable: true,
         renderCell: renderCellExpand
     },
-    //   { field: 'id', headerName: 'ID', width: 70 },
-    //   { field: 'firstName', headerName: 'First name', width: 130 },
-    //   { field: 'lastName', headerName: 'Last name', width: 130 },
-    //   {
-    //     field: 'age',
-    //     headerName: 'Age',
-    //     type: 'number',
-    //     width: 90,
-    //   },
-    //   {
-    //     field: 'fullName',
-    //     headerName: 'Full name',
-    //     description: 'This column has a value getter and is not sortable.',
-    //     sortable: false,
-    //     width: 160,
-    //     valueGetter: (params) =>
-    //       `${params.getValue(params.id, 'firstName') || ''} ${
-    //         params.getValue(params.id, 'lastName') || ''
-    //       }`,
-    //   },
 ];
 
 const init_rows = [
-    { id: 1, review_id: 1, review: { text: "this is default placeholder", start_index: 2, end_index: 4 } },
-    { id: 2, review_id: 2, review: { text: "this is another placeholder", start_index: 2, end_index: 4 } },
-    { id: 3, review_id: 3, review: { text: "", start_index: 2, end_index: 4 } },
-    { id: 4, review_id: 4, review: { text: "", start_index: 2, end_index: 4 } },
+    { id: 1, review_id: 1, review: { text: "this is default placeholder", matched_parts: "is" }, correct: false, notes: "this is an example of a bad review which extends past the normal bounds" },
+    { id: 2, review_id: 2, review: { text: "this is another placeholder", matched_parts: "is another" }, correct: true, notes: "" },
 ];
 
-// function useApiRef() {
-//     const apiRef = React.useRef(null);
-//     const _columns = React.useMemo(() => {
-//         columns.concat({
-//             field: "__HIDDEN__",
-//             width: 0,
-//             renderCell: (props) => {
-//                 apiRef.current = props.api;
-//                 return null;
-//             }
-//         })
-//     }, [columns]);
-
-//     return {apiRef, columns: _columns};
-// }
-
 const useMutation = () => {
-    return React.useCallback(
-      (user) =>
-        new Promise((resolve) =>
+    return React.useCallback((row) =>
+        new Promise((resolve) => {
+          console.log(row);
           setTimeout(() => {
-            resolve(user);
-          }, 200),
+            resolve(row);
+          }, 200)}
         ),
-      [],
-    );
-  };
+    []);
+};
 
 export default function ResultTable() {
-    // const {apiRef, columns} = useApiRef();
     const [snackbar, setSnackbar] = React.useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
 
@@ -139,17 +80,20 @@ export default function ResultTable() {
     // anytime changes are made to a row, make sure persists on backend and update user by updating snackbar
     const handleCellEditCommit = React.useCallback(
         async (params) => {
+          console.log(params);
           try {
-            // make HTTP request to save on backend
-            const response = await mutateRow({
-              id: params.id,
-              [params.field]: params.value,
-            });
-    
-            setSnackbar({ children: 'Row successfully saved', severity: 'success' });
-            setRows((prev) =>
-              prev.map((row) => (row.id === params.id ? { ...row, ...response } : row)),
-            );
+            if (params.value) {
+              // make HTTP request to save on backend
+              const response = await mutateRow({
+                id: params.id,
+                [params.field]: params.value,
+              });
+      
+              setSnackbar({ children: 'Row successfully saved', severity: 'success' });
+              setRows((prev) =>
+                prev.map((row) => (row.id === params.id ? { ...row, ...response } : row)),
+              );
+            }
           } catch (error) {
             setSnackbar({ children: 'Error while saving row', severity: 'error' });
             // Restore the row in case of error
@@ -162,9 +106,8 @@ export default function ResultTable() {
     return (
         <div style={{ height: '61.8vh', width: '100%' }} >
             <DataGrid
-                // rows={searchState['rows']}
-                rows={init_rows}
-                // rows={searchState.rows}
+                // rows={init_rows}
+                rows={searchState.rows}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}

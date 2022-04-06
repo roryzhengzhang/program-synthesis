@@ -7,7 +7,7 @@ const initialState = {
 }
 
 export const SumbitPattern = createAsyncThunk('search/submit', async (request, {getState}) => {
-    var url = new URL("http://104.197.99.147:5000/submit")
+    var url = new URL("http://35.192.69.224:5000/submit")
 
     const state = getState()
 
