@@ -1,18 +1,9 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import Link from '@mui/material/Link';
-import Highlighter from "react-highlight-words";
-import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { GridCellExpand, renderCellExpand } from './ExpandCell';
-
-// function HighlighterCellExpand(params){
-//   return (
-//     <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
-//   );
-// }
 
 const columns = [
     { field: 'review_id', headerName: 'Review ID', width: 100, flex: 0.45, renderCell: renderCellExpand},
@@ -24,23 +15,10 @@ const columns = [
         // renderCell: renderCellExpand
         renderCell: (params) => {
             var text = params.value.text
-            var matched = params.value.matched_parts
+            var matched_parts = params.value.matched_parts
             return (
-              // <></>
-              // text
-                <Highlighter
-                    searchWords={[]}
-                    textToHighlight={text}
-                    findChunks={({searchWords, textToHighlight}) => {
-                        var chunks = []
-                        matched.map((m) => {
-                            let start = textToHighlight.indexOf(m)
-                            let end = start + m.length
-                            chunks.push({start, end})
-                        })
-                        return chunks
-                    }}
-                />
+              <GridCellExpand value={text} width={params.colDef.computedWidth} 
+                matched_parts={matched_parts}/>
             )
         }
     },

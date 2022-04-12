@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
+import Highlighter from "react-highlight-words";
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
@@ -13,7 +14,7 @@ function isOverflown(element) {
 }
 
 export const GridCellExpand = React.memo(function GridCellExpand(props) {
-  const { width, value } = props;
+  const { width, value, matched_parts } = props;
   const wrapper = React.useRef(null);
   const cellDiv = React.useRef(null);
   const cellValue = React.useRef(null);
@@ -79,7 +80,20 @@ export const GridCellExpand = React.memo(function GridCellExpand(props) {
         ref={cellValue}
         sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
       >
-        {value}
+        {matched_parts ? 
+        <Highlighter
+        searchWords={[]}
+        textToHighlight={value}
+        findChunks={({searchWords, textToHighlight}) => {
+            var chunks = []
+            matched_parts.map((m) => {
+                let start = textToHighlight.indexOf(m)
+                let end = start + m.length
+                chunks.push({start, end})
+            })
+            return chunks
+        }}
+        /> : value}
       </Box>
       {showPopper && (
         <Popper
@@ -108,7 +122,20 @@ export const GridCellExpand = React.memo(function GridCellExpand(props) {
             style={{ minHeight: wrapper.current.offsetHeight - 3 }}
           >
             <Typography variant="body2" style={{ padding: 8 }}>
-              {value}
+              {matched_parts ? 
+              <Highlighter
+              searchWords={[]}
+              textToHighlight={value}
+              findChunks={({searchWords, textToHighlight}) => {
+                  var chunks = []
+                  matched_parts.map((m) => {
+                      let start = textToHighlight.indexOf(m)
+                      let end = start + m.length
+                      chunks.push({start, end})
+                  })
+                  return chunks
+              }}
+              /> : value}
             </Typography>
           </Paper>
         </Popper>
@@ -123,9 +150,11 @@ GridCellExpand.propTypes = {
 
 export function renderCellExpand(params) {
   let width = params.colDef.computedWidth;
-  params.field === "review_id" ? width = width * 1.382 : width = width;
+
+  if (params.field === "review_id") width = width * 1.382;
+
   return (
-    <GridCellExpand value={params.value || ''} width={width} />
+    <GridCellExpand value={params.value || ''} width={width}/>
   );
 }
 
@@ -137,5 +166,5 @@ renderCellExpand.propTypes = {
   /**
    * The cell value, but if the column has valueGetter, use getValue.
    */
-  // value: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
 };
